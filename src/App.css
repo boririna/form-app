@@ -1,3 +1,47 @@
 .App {
 	text-align: center;
+	padding-top: 30px;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	margin: 0 auto;
+	align-items: center;
+}
+
+form input {
+	width: 300px;
+	margin-bottom: 20px;
+	height: 30px;
+	border: 2px solid rgb(223, 134, 134);
+	border-radius: 3px;
+}
+
+form input:focus {
+	outline: none;
+	border: 2px solid rgb(175, 91, 91);
+}
+
+form button {
+	width: 150px;
+	height: 30px;
+	background-color: rgb(172, 93, 93);
+	color: white;
+	border: none;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+form button:hover {
+	background-color: rgb(146, 64, 64);
+}
+
+form button:active {
+	background-color: rgb(139, 47, 47);
+}
+
+.disabled {
+	opacity: 0.5;
+	cursor: default;
 }

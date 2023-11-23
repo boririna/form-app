@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import './App.css';
 
 const sendFormData = (formData) => {
@@ -6,9 +6,6 @@ const sendFormData = (formData) => {
 };
 
 export const App = () => {
-	// const [email, setEmail] = useState('');
-	// const [password, setpassword] = useState('');
-
 	const [formData, setFormData] = useState({
 		email: '',
 		password: '',
@@ -17,6 +14,10 @@ export const App = () => {
 	const [emailError, setEmailError] = useState(null);
 	const [passwordError, setPasswordError] = useState(null);
 	const [repeatPasswordError, setRepeatPasswordError] = useState(null);
+
+	const submitButtonRef = useRef(null);
+
+	// email validation
 
 	const onEmailChange = ({ target }) => {
 		setFormData({
@@ -41,6 +42,23 @@ export const App = () => {
 		}
 	};
 
+	// password validation
+
+	const onPasswordChange = ({ target }) => {
+		setFormData({
+			...formData,
+			password: target.value,
+		});
+
+		let newError = null;
+
+		if (target.value.length > 20) {
+			newError = 'Неверный пароль. Должно быть не больше 20 символов.';
+		}
+
+		setPasswordError(newError);
+	};
+
 	const passwordFormat = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 
 	const onPasswordBlur = () => {
@@ -49,6 +67,31 @@ export const App = () => {
 			setPasswordError(
 				'Неверный пароль. Должна быть хотя бы одна цифра, маленькая и большая буква и минимум 8 символов',
 			);
+		}
+	};
+
+	// repeat password check
+
+	const onRepeatPasswordChange = ({ target }) => {
+		setFormData({
+			...formData,
+			repeatPassword: target.value,
+		});
+
+		let newError = null;
+
+		if (target.value.length > 20) {
+			newError = 'Неверный пароль. Должно быть не больше 20 символов.';
+		}
+
+		setRepeatPasswordError(newError);
+
+		if (
+			emailError === null &&
+			passwordError === null &&
+			password === repeatPassword
+		) {
+			submitButtonRef.current.focus();
 		}
 	};
 
@@ -62,6 +105,7 @@ export const App = () => {
 
 	const onSubmit = (event) => {
 		event.preventDefault();
+
 		sendFormData(formData);
 	};
 
@@ -83,12 +127,7 @@ export const App = () => {
 					type="password"
 					placeholder="Пароль"
 					value={password}
-					onChange={({ target }) =>
-						setFormData({
-							...formData,
-							password: target.value,
-						})
-					}
+					onChange={onPasswordChange}
 					onBlur={onPasswordBlur}
 				/>
 				{repeatPasswordError && <div>{repeatPasswordError}</div>}
@@ -97,15 +136,11 @@ export const App = () => {
 					type="password"
 					placeholder="Повторите пароль"
 					value={repeatPassword}
-					onChange={({ target }) =>
-						setFormData({
-							...formData,
-							repeatPassword: target.value,
-						})
-					}
+					onChange={onRepeatPasswordChange}
 					onBlur={onRepeatPasswordBlur}
 				/>
 				<button
+					ref={submitButtonRef}
 					type="submit"
 					disabled={!!emailError || !!passwordError || repeatPasswordError}
 					className={

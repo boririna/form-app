@@ -1,8 +1,42 @@
 import { useState, useRef, useEffect } from 'react';
+import * as yup from 'yup';
 import './App.css';
 
 const sendFormData = (formData) => {
 	console.log(formData);
+};
+
+const onEmailChangeSchema = yup
+	.string()
+	.max(40, 'Неверный имейл. Должно быть не больше 40 символов.');
+
+const onEmailBlurSchema = yup
+	.string()
+	.matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Неверный имейл.');
+
+const onPasswordChangeSchema = yup
+	.string()
+	.max(20, 'Неверный пароль. Должно быть не больше 20 символов.');
+
+const onPasswordBlurSchema = yup
+	.string()
+	.matches(
+		/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
+		'Неверный пароль. Должна быть хотя бы одна цифра, маленькая и большая буква и минимум 8 символов.',
+	);
+
+const validateAndGetErrorMessage = (schema, value) => {
+	let errorMessage = null;
+
+	try {
+		schema.validateSync(value);
+	} catch ({ errors }) {
+		errorMessage = errors
+			.reduce((message, error) => message + error + 'n', '')
+			.trim();
+	}
+
+	return errorMessage;
 };
 
 export const App = () => {
@@ -25,21 +59,14 @@ export const App = () => {
 			email: target.value,
 		});
 
-		let newError = null;
-
-		if (target.value.length > 40) {
-			newError = 'Неверный имейл. Должно быть не больше 40 символов.';
-		}
+		const newError = validateAndGetErrorMessage(onEmailChangeSchema, target.value);
 
 		setEmailError(newError);
 	};
 
-	const mailFormat = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-
-	const onEmailBlur = () => {
-		if (!mailFormat.test(email)) {
-			setEmailError('Неверный имейл.');
-		}
+	const onEmailBlur = ({ target }) => {
+		const newError = validateAndGetErrorMessage(onEmailBlurSchema, target.value);
+		setEmailError(newError);
 	};
 
 	// password validation
@@ -50,24 +77,15 @@ export const App = () => {
 			password: target.value,
 		});
 
-		let newError = null;
-
-		if (target.value.length > 20) {
-			newError = 'Неверный пароль. Должно быть не больше 20 символов.';
-		}
+		const newError = validateAndGetErrorMessage(onPasswordChangeSchema, target.value);
 
 		setPasswordError(newError);
 	};
 
-	const passwordFormat = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+	const onPasswordBlur = ({ target }) => {
+		const newError = validateAndGetErrorMessage(onPasswordBlurSchema, target.value);
 
-	const onPasswordBlur = () => {
-		if (!passwordFormat.test(password)) {
-			console.log(password);
-			setPasswordError(
-				'Неверный пароль. Должна быть хотя бы одна цифра, маленькая и большая буква и минимум 8 символов',
-			);
-		}
+		setPasswordError(newError);
 	};
 
 	// repeat password check

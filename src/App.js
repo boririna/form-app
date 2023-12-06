@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import './App.css';
 
 const sendFormData = (formData) => {
@@ -85,14 +85,6 @@ export const App = () => {
 		}
 
 		setRepeatPasswordError(newError);
-
-		if (
-			emailError === null &&
-			passwordError === null &&
-			password === repeatPassword
-		) {
-			submitButtonRef.current.focus();
-		}
 	};
 
 	const onRepeatPasswordBlur = () => {
@@ -108,6 +100,16 @@ export const App = () => {
 
 		sendFormData(formData);
 	};
+
+	useEffect(() => {
+		if (
+			emailError === null &&
+			passwordError === null &&
+			password === repeatPassword
+		) {
+			submitButtonRef.current.focus();
+		}
+	}, [password, repeatPassword]);
 
 	return (
 		<div className="App">

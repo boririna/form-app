@@ -1,16 +1,37 @@
 import { useState, useRef, useEffect } from 'react';
 import * as yup from 'yup';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import './App.css';
 
 const sendFormData = (formData) => {
 	console.log(formData);
 };
 
+const fieldSchema = yup.object().shape({
+	email: yup
+		.string()
+		.matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Неверный имейл.')
+		.max(40, 'Неверный имейл. Должно быть не больше 40 символов.'),
+	password: yup
+		.string()
+		.max(20, 'Неверный пароль. Должно быть не больше 20 символов.')
+		.matches(
+			/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
+			'Неверный пароль. Должна быть хотя бы одна цифра, маленькая и большая буква и минимум 8 символов.',
+		),
+	repeatPassword: yup
+		.string()
+		.max(20, 'Неверный пароль. Должно быть не больше 20 символов.')
+		.oneOf([yup.ref('password'), null], 'Пароли не совпадают'),
+});
+
 const onEmailChangeSchema = yup
 	.string()
 	.max(40, 'Неверный имейл. Должно быть не больше 40 символов.');
 
 const onEmailBlurSchema = yup
+	.string()
 	.string()
 	.matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Неверный имейл.');
 

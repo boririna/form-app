@@ -30,6 +30,7 @@ export const App = () => {
 	const {
 		register,
 		handleSubmit,
+		getValues,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
@@ -46,15 +47,19 @@ export const App = () => {
 
 	const submitButtonRef = useRef(null);
 
+	const password = getValues('password');
+	const repeatPassword = getValues('repeatPassword');
+
 	useEffect(() => {
 		if (
 			emailError === null &&
 			passwordError === null &&
-			register.password === register.repeatPassword
+			password === repeatPassword
 		) {
 			submitButtonRef.current.focus();
 		}
-	}, [register.password, register.repeatPassword]);
+		console.log('password', repeatPassword);
+	}, [password, repeatPassword]);
 
 	return (
 		<div className="App">

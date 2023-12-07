@@ -44,6 +44,8 @@ export const App = () => {
 	const passwordError = errors.password?.message;
 	const repeatPasswordError = errors.repeatPassword?.message;
 
+	const submitButtonRef = useRef(null);
+
 	useEffect(() => {
 		if (
 			emailError === null &&
@@ -56,33 +58,27 @@ export const App = () => {
 
 	return (
 		<div className="App">
-			<form onSubmit={onSubmit}>
+			<form onSubmit={handleSubmit(sendFormData)}>
 				{emailError && <div>{emailError}</div>}
 				<input
 					name="email"
 					type="email"
 					placeholder="Почта"
-					value={email}
-					onChange={onEmailChange}
-					onBlur={onEmailBlur}
+					{...register('email')}
 				/>
 				{passwordError && <div>{passwordError}</div>}
 				<input
 					name="password"
 					type="password"
 					placeholder="Пароль"
-					value={password}
-					onChange={onPasswordChange}
-					onBlur={onPasswordBlur}
+					{...register('password')}
 				/>
 				{repeatPasswordError && <div>{repeatPasswordError}</div>}
 				<input
 					name="repeatPassword"
 					type="password"
 					placeholder="Повторите пароль"
-					value={repeatPassword}
-					onChange={onRepeatPasswordChange}
-					onBlur={onRepeatPasswordBlur}
+					{...register('repeatPassword')}
 				/>
 				<button
 					ref={submitButtonRef}

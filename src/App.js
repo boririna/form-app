@@ -51,15 +51,11 @@ export const App = () => {
 	const repeatPassword = getValues('repeatPassword');
 
 	useEffect(() => {
-		if (
-			emailError === null &&
-			passwordError === null &&
-			password === repeatPassword
-		) {
+		if (!(emailError && passwordError && repeatPasswordError)) {
 			submitButtonRef.current.focus();
 		}
-		console.log('password', repeatPassword);
-	}, [password, repeatPassword]);
+		console.log('repeatPassword', repeatPassword);
+	}, [passwordError, repeatPasswordError, emailError]);
 
 	return (
 		<div className="App">
